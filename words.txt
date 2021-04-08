@@ -1,10 +1,7 @@
-Isolation
-Select
-Musician
-Hesitate
-Frustration
-Elect
-Mathematician
-Clinic
-Politician
-Coordination
+cup
+spoon
+fork
+bowl
+plate
+knife
+spork

@@ -18,7 +18,7 @@ Email: aaron@webdataiot.com
    
    Or clone the repository from Github.
    
-   `$ git clone https://github.com/aa4096/Unscrabblah.git`
+   `$ git clone ://github.com/aa4096/Unscrabblah.git`
 
 2. Unscrabblah! allows you to either add vocabulary words to the `words.txt` file or enter vocabulary words one by one during run time. Choose the one that works best for you!
 
