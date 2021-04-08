@@ -3,7 +3,7 @@
 require "httparty"
 
 $api_key = "5f0ddd7f-7c30-4eec-bf0b-a1d02fdf9551"
-$sleep = 1
+$sleep = 0
 
 $words = []
 
@@ -100,7 +100,7 @@ def PingWebster(word)
     end
     return definitions[0]
   rescue
-    print "error\n\n"
+    print "There was an error with the word [#{word}]\n\n---\n\n"
   end
 end
 
