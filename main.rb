@@ -37,7 +37,7 @@ def GetWordsFromUser(file)
         break
       elsif text_or_input == "input"
         $valid_command = true
-        puts "\n\nEnter each of your words. Type <done> when you are finished:"
+        puts "\n\Type each of your words and hit Enter. Type <done> when you are finished entering words:"
         @user_words = []
 
         loop do
@@ -85,13 +85,20 @@ def ShuffleWords(words)
   return @word_hashes
 end
 
+def URLFriendlyWord(word)
+  output = word.gsub(/\s/,'%20')
+  return output
+end
+
 def PingWebster(word)
   query = {}
   body = {}
   options = {}
 
+  url_friendly_word = URLFriendlyWord(word)
+
   begin
-    response = HTTParty.post("https://www.dictionaryapi.com/api/v3/references/sd2/json/#{word}?key=#{$api_key}")
+    response = HTTParty.post("https://www.dictionaryapi.com/api/v3/references/sd2/json/#{url_friendly_word}?key=#{$api_key}")
 
     definitions = []
     response.each do |res|
@@ -135,7 +142,8 @@ def PrintShuffledWords(words)
           print "(#{index}) " + definition.capitalize + ".\n"
         end
       else
-        print "Definition: https://www.merriam-webster.com/dictionary/#{word[:word]}\n"
+        word = URLFriendlyWord(word[:word])
+        print "Definition: https://www.merriam-webster.com/dictionary/#{word}\n"
       end
     end
     puts "\n---\n\n"
