@@ -90,8 +90,10 @@ def PingWebster(word)
   body = {}
   options = {}
 
+  url_friendly_word = word.gsub(/\s/,'%20')
+
   begin
-    response = HTTParty.post("https://www.dictionaryapi.com/api/v3/references/sd2/json/#{word}?key=#{$api_key}")
+    response = HTTParty.post("https://www.dictionaryapi.com/api/v3/references/sd2/json/#{url_friendly_word}?key=#{$api_key}")
 
     definitions = []
     response.each do |res|
