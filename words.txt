@@ -1,7 +1,0 @@
-cup
-spoon
-fork
-bowl
-plate
-knife
-spork

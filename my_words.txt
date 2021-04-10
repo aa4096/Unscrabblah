@@ -1,0 +1,10 @@
+isolation
+select
+musician
+hesitate
+frustration
+elect
+mathematician
+clinic
+politician
+coordination
