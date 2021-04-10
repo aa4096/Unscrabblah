@@ -54,18 +54,18 @@ module Methods
 
   def GetWordsFromInput()
     puts "\n\Type each of your words and hit Enter. Type <done> when you are finished entering words:"
-    @user_words = []
+    user_words = []
 
     loop do
-      @user_word = gets.downcase.chomp
-      if @user_word == "done"
+      user_word = gets.downcase.chomp
+      if user_word == "done"
         break
       end
-      @user_words << @user_word
+      user_words << user_word
     end
 
-    @words = @user_words
-    return @words
+    words = user_words
+    return words
   end
 
   def GetWordsFromFile(file)
@@ -80,28 +80,28 @@ module Methods
   end
 
   def ShuffleWords(words)
-    @words_array = []
-    @word_hashes = []
-    @word_hash = {}
+    words_array = []
+    word_hashes = []
+    word_hash = {}
 
     words.each do |word|
-      @word_hash = {}
-      @word_array = []
-      @word = word
-      @word_hash[:word] = @word
-      @definitions = PingWebster(@word)
-      @word_hash[:definitions] = @definitions
+      word_hash = {}
+      word_array = []
+      word = word
+      word_hash[:word] = word
+      definitions = PingWebster(word)
+      word_hash[:definitions] = definitions
 
-      @word.each_char { |letter|
-        @word_array << letter
+      word.each_char { |letter|
+        word_array << letter
       }
 
-      @word_array = @word_array.shuffle
-      @word_hash[:shuffled] = @word_array.join
-      @word_hashes << @word_hash
+      word_array = word_array.shuffle
+      word_hash[:shuffled] = word_array.join
+      word_hashes << word_hash
     end
 
-    return @word_hashes
+    return word_hashes
   end
 
   def URLFriendlyWord(word)
@@ -172,20 +172,20 @@ module Methods
   end
 
   def RunMethodsOnResponses(input)
-    @valid_response = nil
-    if @valid_response == nil || @valid_response == false
+    valid_response = nil
+    if valid_response == nil || valid_response == false
       loop do
         puts input[:question]
-        @response = gets.downcase.chomp
-        @responses = []
+        response = gets.downcase.chomp
+        responses = []
         input[:valid_responses].each do |valid_response|
-          @responses << valid_response[:response]
+          responses << valid_response[:response]
         end
-        if @responses.include?(@response) == true
+        if responses.include?(response) == true
           input[:valid_responses].each do |valid_response|
-            if valid_response[:response] == @response
+            if valid_response[:response] == response
               valid_response[:methods].each do |method|
-                  @valid_response = true
+                  valid_response = true
                   if method[:args]
                     return send(method[:method],method[:args])
                   else
@@ -197,7 +197,7 @@ module Methods
           end
           break
         else
-          @valid_response = false
+          valid_response = false
           puts input[:error]
           sleep $sleep
         end
