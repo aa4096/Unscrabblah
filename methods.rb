@@ -1,4 +1,4 @@
-module Methods
+class Methods
 
   TEACHERSORSTUDENTS = {
     :question => "Are you a <teacher> or a <student>?",
