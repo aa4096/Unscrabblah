@@ -1,14 +1,21 @@
 class Methods
 
+  ERROR_MESSAGE = "\nOops! You entered an invalid response.\n\n"
+  MYWORDS = "my_words.txt"
+
+  # Hash properties for questions.
+  # Sets each question's valid responses and runs the appropriate methods with
+  # arguments upon valid response. Throws error upon invalid responses.
   TEACHERSORSTUDENTS = {
     :question => "Are you a <teacher> or a <student>?",
+    :type => "string",
     :valid_responses => [
       {
         :response => "teacher",
         :methods => [
           {
-            :method => "GetWordsAndPrintShuffled",
-            :args => "my_words.txt",
+            :method => "StartTool",
+            :args => Methods::MYWORDS
           }
         ]
       },
@@ -21,10 +28,12 @@ class Methods
         ]
       }
     ],
-    :error => "\nOops! You entered an invalid response.\n\n"
+    :error => Methods::ERROR_MESSAGE
   }
 
   FILEORINPUT = {
+    :words_file => "my_words.txt",
+    :type => "string",
     :question => "\nWould you like to use a text <file> or <input> each word?",
     :valid_responses => [
       {
@@ -32,7 +41,7 @@ class Methods
         :methods => [
           {
             :method => "GetWordsFromFile",
-            :args => "my_words.txt",
+            :args => Methods::MYWORDS
           }
         ]
       },
@@ -45,7 +54,53 @@ class Methods
         ]
       }
     ],
-    :error => "\nOops! You entered an invalid response.\n\n"
+    :error => Methods::ERROR_MESSAGE
+  }
+
+  CHOOSEDIFFICULTY = {
+    :question => "\nWould you like to play on <easy>, <medium>, or <hard>?",
+    :type => "string",
+    :valid_responses => [
+      {
+        :response => "easy",
+        :methods => [
+          {
+            :method => "SetDifficulty",
+            :args => "easy"
+          }
+        ]
+      },
+      {
+        :response => "medium",
+        :methods => [
+          {
+            :method => "SetDifficulty",
+            :args => "medium"
+          }
+        ]
+      },
+      {
+        :response => "hard",
+        :methods => [
+          {
+            :method => "SetDifficulty",
+            :args => "hard"
+          }
+        ]
+      }
+    ],
+    :error => Methods::ERROR_MESSAGE
+  }
+
+  SETNUMBEROFWORDS = {
+    :question => "How many words would you like to unscramble? Enter a whole number.",
+    :type => "int",
+    :methods => [
+      {
+        :method => "SetNumberOfWords",
+      }
+    ],
+    :error => Methods::ERROR_MESSAGE
   }
 
   def GetWordsFromUser(file)
@@ -178,28 +233,47 @@ class Methods
         puts input[:question]
         response = gets.downcase.chomp
         responses = []
-        input[:valid_responses].each do |valid_response|
-          responses << valid_response[:response]
-        end
-        if responses.include?(response) == true
+        if input[:type] == "string"
           input[:valid_responses].each do |valid_response|
-            if valid_response[:response] == response
-              valid_response[:methods].each do |method|
-                  valid_response = true
-                  if method[:args]
-                    return send(method[:method],method[:args])
-                  else
-                    return send(method[:method])
-                  end
-                  break
-              end
-            end
+            responses << valid_response[:response]
           end
-          break
-        else
-          valid_response = false
-          puts input[:error]
-          sleep $sleep
+          if responses.include?(response) == true
+            input[:valid_responses].each do |valid_response|
+              if valid_response[:response] == response
+                valid_response[:methods].each do |method|
+                    valid_response = true
+                    if method[:args]
+                      return send(method[:method],method[:args])
+                    else
+                      return send(method[:method])
+                    end
+                    break
+                  end
+                end
+              end
+            break
+          else
+            valid_response = false
+            puts input[:error]
+            sleep $sleep
+          end
+        elsif input[:type] == "int"
+          response = response.to_i
+          print response
+          if response.is_a? Numeric == true
+            input[:methods].each do |method|
+              if method[:args]
+                return send(method[:method],method[:args])
+              else
+                return send(method[:method])
+              end
+              break
+            end
+          else
+            valid_response = false
+            puts input[:error]
+            sleep $sleep
+          end
         end
       end
     end
@@ -210,14 +284,61 @@ class Methods
     PrintShuffledWords(words)
   end
 
+  def StartTool(file)
+    GetWordsAndPrintShuffled(file)
+  end
+
   def StartProgram()
     RunMethodsOnResponses(Methods::TEACHERSORSTUDENTS)
+  end
+
+  def ChooseDifficulty()
+    RunMethodsOnResponses(Methods::CHOOSEDIFFICULTY)
+  end
+
+  def SetDifficulty(difficulty)
+    words = GetWordsFromFile("english_words.txt")
+    words_by_difficulty = GrabWordsBasedOnDifficulty(difficulty,words)
+    words_by_number = RunMethodsOnResponses(Methods::SETNUMBEROFWORDS)
+  end
+
+  def GrabWordsBasedOnDifficulty(difficulty,words)
+    difficulties = {
+      :easy => [0,5],
+      :medium => [6,10],
+      :hard => [11,-1],
+    }
+
+    difficulty_floor = difficulties[difficulty.to_sym][0].to_int
+    if difficulties[difficulty.to_sym][1].to_int == -1
+      difficulty_ceiling = Float::INFINITY
+    else
+      difficulty_ceiling = difficulties[difficulty.to_sym][1].to_int
+    end
+
+    puts difficulty
+    puts difficulty_floor
+    puts difficulty_ceiling
+
+    selected_words = words.select do |word|
+      word.length >= difficulty_floor
+    end
+
+    selected_words = selected_words.select do |word|
+      word.length <= difficulty_ceiling
+    end
+
+    return selected_words
+  end
+
+  def SetNumberOfWords(number)
+
   end
 
   def StartGame()
     LoadingPrompt("Game Starting",4)
     words = GetWordsFromFile("english_words.txt")
-    puts words
+    ChooseDifficulty()
     exit
   end
 

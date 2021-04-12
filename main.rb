@@ -3,7 +3,7 @@ require_relative 'methods.rb'
 require "httparty"
 
 $api_key = "5f0ddd7f-7c30-4eec-bf0b-a1d02fdf9551"
-$sleep = 0.05
+$sleep = 0
 
 $words = []
 
